@@ -973,6 +973,19 @@ public class MaterialContainerTransform extends Transition {
 
     addListener(
         new TransitionListenerAdapter() {
+          void showTransitionEnd() {
+            animator.removeListener(this);
+            if (holdAtEndEnabled) {
+              // Keep drawable showing and views hidden (useful for Activity return transitions)
+              return;
+            }
+            // Show the actual views at the end of the transition
+            startView.setAlpha(1);
+            endView.setAlpha(1);
+
+            // Remove the transition drawable from the root ViewOverlay
+            ViewUtils.getOverlay(drawingView).remove(transitionDrawable);
+          }
           @Override
           public void onTransitionStart(@NonNull Transition transition) {
             // Add the transition drawable to the root ViewOverlay
@@ -985,38 +998,12 @@ public class MaterialContainerTransform extends Transition {
 
           @Override
           public void onTransitionEnd(@NonNull Transition transition) {
-            removeListener(this);
-            if (holdAtEndEnabled) {
-              // Keep drawable showing and views hidden (useful for Activity return transitions)
-              return;
-            }
-            // Show the actual views at the end of the transition
-            startView.setAlpha(1);
-            endView.setAlpha(1);
-
-            // Remove the transition drawable from the root ViewOverlay
-            drawingView.getOverlay().remove(transitionDrawable);
+            showTransitionEnd();
           }
           
           @Override
           public void onTransitionCancel(@NonNull Transition transition) {
-            Log.w(TAG, "Call on transition cancel with progress:" + transitionDrawable.progress);
-             ValueAnimator animator = ValueAnimator.ofFloat(transitionDrawable.progress, 0f);
-             animator.addUpdateListener(
-               new AnimatorUpdateListener() {
-                  @Override
-                  public void onAnimationUpdate(ValueAnimator animation) {
-                    transitionDrawable.setProgress(animation.getAnimatedFraction());
-                    if (animation.getAnimatedFraction() >= 0f) {
-                        // Show the actual views at the end of the transition
-                        startView.setAlpha(1);
-                        endView.setAlpha(1);
-                        // Remove the transition drawable from the root ViewOverlay
-                        drawingView.getOverlay().remove(transitionDrawable);
-                    }
-                  }
-               });
-               animator.start();
+            showTransitionEnd();
           }
         });
 
