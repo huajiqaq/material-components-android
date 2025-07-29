@@ -971,19 +971,21 @@ public final class MaterialContainerTransform extends Transition {
           }
         });
 
-    animator.addListener(
+    addListener(
         new TransitionListenerAdapter() {
           @Override
           public void onTransitionStart(@NonNull Transition transition) {
             // Add the transition drawable to the root ViewOverlay
             drawingView.getOverlay().add(transitionDrawable);
+
             // Hide the actual views at the beginning of the transition
             startView.setAlpha(0);
             endView.setAlpha(0);
           }
-          
-          void showTransitionEnd() {
-            animator.removeListener(this);
+
+          @Override
+          public void onTransitionEnd(@NonNull Transition transition) {
+            removeListener(this);
             if (holdAtEndEnabled) {
               // Keep drawable showing and views hidden (useful for Activity return transitions)
               return;
@@ -995,7 +997,7 @@ public final class MaterialContainerTransform extends Transition {
             // Remove the transition drawable from the root ViewOverlay
             drawingView.getOverlay().remove(transitionDrawable);
           }
-
+          
           @Override
           public void onAnimationStart(@NonNull Animator animation) {
             // Add the transition drawable to the root ViewOverlay
@@ -1018,6 +1020,7 @@ public final class MaterialContainerTransform extends Transition {
 
           @Override
           public void onAnimationRepeat(@NonNull Animator animation) {}
+          
         });
 
     return animator;
