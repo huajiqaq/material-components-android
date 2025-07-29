@@ -916,7 +916,7 @@ public final class MaterialContainerTransform extends Transition {
       drawingView = findAncestorById(drawingBaseView, drawingViewId);
       boundingView = null;
     }
-
+    
     // Calculate drawable bounds and offset start/end bounds as needed
     RectF drawingViewBounds = getLocationInWindow(drawingView);
     float offsetX = -drawingViewBounds.left;
@@ -971,21 +971,19 @@ public final class MaterialContainerTransform extends Transition {
           }
         });
 
-    addListener(
+    animator.addListener(
         new TransitionListenerAdapter() {
           @Override
           public void onTransitionStart(@NonNull Transition transition) {
             // Add the transition drawable to the root ViewOverlay
             drawingView.getOverlay().add(transitionDrawable);
-
             // Hide the actual views at the beginning of the transition
             startView.setAlpha(0);
             endView.setAlpha(0);
           }
-
-          @Override
-          public void onTransitionEnd(@NonNull Transition transition) {
-            removeListener(this);
+          
+          void showTransitionEnd() {
+            animator.removeListener(this);
             if (holdAtEndEnabled) {
               // Keep drawable showing and views hidden (useful for Activity return transitions)
               return;
@@ -997,6 +995,29 @@ public final class MaterialContainerTransform extends Transition {
             // Remove the transition drawable from the root ViewOverlay
             drawingView.getOverlay().remove(transitionDrawable);
           }
+
+          @Override
+          public void onAnimationStart(@NonNull Animator animation) {
+            // Add the transition drawable to the root ViewOverlay
+            ViewUtils.getOverlay(drawingView).add(transitionDrawable);
+
+            // Hide the actual views at the beginning of the transition
+            startView.setAlpha(0);
+            endView.setAlpha(0);
+          }
+
+          @Override
+          public void onAnimationEnd(@NonNull Animator animation) {
+            showTransitionEnd();
+          }
+
+          @Override
+          public void onAnimationCancel(@NonNull Animator animation) {
+            showTransitionEnd();
+          }
+
+          @Override
+          public void onAnimationRepeat(@NonNull Animator animation) {}
         });
 
     return animator;
@@ -1571,5 +1592,10 @@ public final class MaterialContainerTransform extends Transition {
       this.scaleMask = scaleMask;
       this.shapeMask = shapeMask;
     }
+  }
+
+  @Override
+  public boolean isSeekingSupported() {
+    return true;
   }
 }
