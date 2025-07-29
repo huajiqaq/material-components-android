@@ -1000,6 +1000,7 @@ public class MaterialContainerTransform extends Transition {
           
           @Override
           public void onTransitionCancel(@NonNull Transition transition) {
+            Log.w(TAG, "Call on transition cancel with progress:" + transitionDrawable.progress);
              ValueAnimator animator = ValueAnimator.ofFloat(transitionDrawable.progress, 0f);
              animator.addUpdateListener(
                new AnimatorUpdateListener() {
