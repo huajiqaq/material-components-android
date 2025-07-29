@@ -1000,20 +1000,19 @@ public class MaterialContainerTransform extends Transition {
           
           @Override
           public void onTransitionCancel(@NonNull Transition transition) {
-              ValueAnimator animator = ValueAnimator.ofFloat(transitionDrawable.progress, 0f);
-              animator.addUpdateListener(
+             ValueAnimator animator = ValueAnimator.ofFloat(transitionDrawable.progress, 0f);
+             animator.addUpdateListener(
                new AnimatorUpdateListener() {
-                 @Override
+                  @Override
                   public void onAnimationUpdate(ValueAnimator animation) {
                     transitionDrawable.setProgress(animation.getAnimatedFraction());
-                  }
-                  @Override
-                  public void onAnimationEnd(Animator animation) {
-                    // Show the actual views at the end of the transition
-                    startView.setAlpha(1);
-                    endView.setAlpha(1);
-                    // Remove the transition drawable from the root ViewOverlay
-                    drawingView.getOverlay().remove(transitionDrawable);
+                    if (animation.getAnimatedFraction() >= 0f) {
+                        // Show the actual views at the end of the transition
+                        startView.setAlpha(1);
+                        endView.setAlpha(1);
+                        // Remove the transition drawable from the root ViewOverlay
+                        drawingView.getOverlay().remove(transitionDrawable);
+                    }
                   }
                });
                animator.start();
