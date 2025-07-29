@@ -998,29 +998,6 @@ public final class MaterialContainerTransform extends Transition {
             drawingView.getOverlay().remove(transitionDrawable);
           }
           
-          @Override
-          public void onAnimationStart(@NonNull Animator animation) {
-            // Add the transition drawable to the root ViewOverlay
-            ViewUtils.getOverlay(drawingView).add(transitionDrawable);
-
-            // Hide the actual views at the beginning of the transition
-            startView.setAlpha(0);
-            endView.setAlpha(0);
-          }
-
-          @Override
-          public void onAnimationEnd(@NonNull Animator animation) {
-            showTransitionEnd();
-          }
-
-          @Override
-          public void onAnimationCancel(@NonNull Animator animation) {
-            showTransitionEnd();
-          }
-
-          @Override
-          public void onAnimationRepeat(@NonNull Animator animation) {}
-          
         });
 
     return animator;
