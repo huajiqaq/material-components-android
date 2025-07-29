@@ -974,7 +974,6 @@ public class MaterialContainerTransform extends Transition {
     addListener(
         new TransitionListenerAdapter() {
           void showTransitionEnd() {
-            animator.removeListener(this);
             if (holdAtEndEnabled) {
               // Keep drawable showing and views hidden (useful for Activity return transitions)
               return;
@@ -984,7 +983,7 @@ public class MaterialContainerTransform extends Transition {
             endView.setAlpha(1);
 
             // Remove the transition drawable from the root ViewOverlay
-            ViewUtils.getOverlay(drawingView).remove(transitionDrawable);
+            drawingView.getOverlay().remove(transitionDrawable);
           }
           @Override
           public void onTransitionStart(@NonNull Transition transition) {
