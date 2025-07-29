@@ -117,7 +117,7 @@ import java.lang.annotation.RetentionPolicy;
  * @see #setScaleMaskProgressThresholds(ProgressThresholds)
  * @see #setShapeMaskProgressThresholds(ProgressThresholds)
  */
-public final class MaterialContainerTransform extends Transition {
+public class MaterialContainerTransform extends Transition {
 
   /**
    * Indicates that this transition should use automatic detection to determine whether it is an
