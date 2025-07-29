@@ -936,11 +936,11 @@ public class MaterialContainerTransform extends Transition {
     final TransitionDrawable transitionDrawable =
         new TransitionDrawable(
             getPathMotion(),
-            copyViewImage(sceneRoot, startView, (startView.getParent() instanceof View) ? (View) startView.getParent() : startView),
+            copyViewImage(sceneRoot, startView),
             startBounds,
             startShapeAppearanceModel,
             getElevationOrDefault(startElevation, startView),
-            copyViewImage(sceneRoot, endView, (endView.getParent() instanceof View) ? (View) endView.getParent() : endView),
+            copyViewImage(sceneRoot, endView),
             endBounds,
             endShapeAppearanceModel,
             getElevationOrDefault(endElevation, endView),
