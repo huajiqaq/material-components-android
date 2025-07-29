@@ -109,17 +109,8 @@ class TransitionUtils {
      */
     public static Bitmap createViewBitmap(View view, Matrix matrix, RectF bounds,
             ViewGroup sceneRoot) {
-        final boolean addToOverlay = !view.isAttachedToWindow();
         ViewGroup parent = null;
         int indexInParent = 0;
-        if (addToOverlay) {
-            if (sceneRoot == null || !sceneRoot.isAttachedToWindow()) {
-                return null;
-            }
-            parent = (ViewGroup) view.getParent();
-            indexInParent = parent.indexOfChild(view);
-            sceneRoot.getOverlay().add(view);
-        }
         Bitmap bitmap = null;
         int bitmapWidth = Math.round(bounds.width());
         int bitmapHeight = Math.round(bounds.height());
@@ -135,10 +126,6 @@ class TransitionUtils {
             view.draw(canvas);
             picture.endRecording();
             bitmap = Bitmap.createBitmap(picture);
-        }
-        if (addToOverlay) {
-            sceneRoot.getOverlay().remove(view);
-            parent.addView(view, indexInParent);
         }
         return bitmap;
     }
