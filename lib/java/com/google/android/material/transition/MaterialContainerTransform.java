@@ -33,6 +33,7 @@ import static com.google.android.material.transition.TransitionUtils.lerp;
 import static com.google.android.material.transition.TransitionUtils.transform;
 
 import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -1004,7 +1005,23 @@ public class MaterialContainerTransform extends Transition {
 
           @Override
           public void onAnimationCancel(@NonNull Animator animation) {
-            showTransitionEnd();
+            ValueAnimator animator = ValueAnimator.ofFloat(animation.getAnimatedFraction(), 0f);
+            animator.addUpdateListener(
+            new AnimatorUpdateListener() {
+              @Override
+              public void onAnimationUpdate(ValueAnimator animation) {
+                transitionDrawable.setProgress(animation.getAnimatedFraction());
+              }
+            });
+            animator.addListener(
+            new AnimatorListener() {
+                @Override
+                public void onAnimationEnd(Animator mAnimator) {
+                    showTransitionEnd();
+                }
+            });
+            
+            animator.start();
           }
 
           @Override
