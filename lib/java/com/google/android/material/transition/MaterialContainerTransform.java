@@ -1013,13 +1013,13 @@ public class MaterialContainerTransform extends Transition {
                 transitionDrawable.setProgress(animation.getAnimatedFraction());
               }
             });
-            animator.addListener(
+            /*animator.addListener(
             new AnimatorListener() {
                 @Override
                 public void onAnimationEnd(Animator mAnimator) {
                     showTransitionEnd();
                 }
-            });
+            });*/
             
             animator.start();
           }
