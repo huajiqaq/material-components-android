@@ -1005,7 +1005,7 @@ public class MaterialContainerTransform extends Transition {
 
           @Override
           public void onAnimationCancel(@NonNull Animator animation) {
-            ValueAnimator animator = ValueAnimator.ofFloat(animation.getAnimatedFraction(), 0f);
+            ValueAnimator animator = ValueAnimator.ofFloat(transitionDrawable.progress, 0f);
             animator.addUpdateListener(
             new AnimatorUpdateListener() {
               @Override
