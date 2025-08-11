@@ -878,6 +878,13 @@ public final class MaterialContainerTransform extends Transition {
     return transitionShapeAppearanceResId;
   }
 
+  private static View maybeGetViewImageCopy(ViewGroup sceneRoot, View view) {
+    if (view.getParent() instanceof View) {
+      return copyViewImage(sceneRoot, view, (View) view.getParent());
+    }
+    return view;
+  }
+
   @Nullable
   @Override
   public Animator createAnimator(
@@ -936,11 +943,11 @@ public final class MaterialContainerTransform extends Transition {
     final TransitionDrawable transitionDrawable =
         new TransitionDrawable(
             getPathMotion(),
-            copyViewImage(sceneRoot, startView, startView.getParent() instanceof View ? (View) startView.getParent() : startView),
+            maybeGetViewImageCopy(sceneRoot, startView),
             startBounds,
             startShapeAppearanceModel,
             getElevationOrDefault(startElevation, startView),
-            copyViewImage(sceneRoot, endView, endView.getParent() instanceof View ? (View) endView.getParent() : endView),
+            maybeGetViewImageCopy(sceneRoot, endView),
             endBounds,
             endShapeAppearanceModel,
             getElevationOrDefault(endElevation, endView),
