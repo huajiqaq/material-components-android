@@ -33,7 +33,6 @@ import static com.google.android.material.transition.TransitionUtils.lerp;
 import static com.google.android.material.transition.TransitionUtils.transform;
 
 import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -118,7 +117,7 @@ import java.lang.annotation.RetentionPolicy;
  * @see #setScaleMaskProgressThresholds(ProgressThresholds)
  * @see #setShapeMaskProgressThresholds(ProgressThresholds)
  */
-public class MaterialContainerTransform extends Transition {
+public final class MaterialContainerTransform extends Transition {
 
   /**
    * Indicates that this transition should use automatic detection to determine whether it is an
@@ -879,6 +878,13 @@ public class MaterialContainerTransform extends Transition {
     return transitionShapeAppearanceResId;
   }
 
+  private static View maybeGetViewImageCopy(ViewGroup sceneRoot, View view) {
+    if (view.getParent() instanceof View) {
+      return copyViewImage(sceneRoot, view, (View) view.getParent());
+    }
+    return view;
+  }
+
   @Nullable
   @Override
   public Animator createAnimator(
@@ -937,11 +943,11 @@ public class MaterialContainerTransform extends Transition {
     final TransitionDrawable transitionDrawable =
         new TransitionDrawable(
             getPathMotion(),
-            copyViewImage(sceneRoot, startView),
+            maybeGetViewImageCopy(sceneRoot, startView),
             startBounds,
             startShapeAppearanceModel,
             getElevationOrDefault(startElevation, startView),
-            copyViewImage(sceneRoot, endView),
+            maybeGetViewImageCopy(sceneRoot, endView),
             endBounds,
             endShapeAppearanceModel,
             getElevationOrDefault(endElevation, endView),
