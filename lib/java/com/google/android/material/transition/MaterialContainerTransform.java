@@ -980,6 +980,7 @@ public final class MaterialContainerTransform extends Transition {
 
     animator.addListener(
         new Animator.AnimatorListener() {
+
           void showTransitionEnd() {
             animator.removeListener(this);
             if (holdAtEndEnabled) {
@@ -1011,29 +1012,13 @@ public final class MaterialContainerTransform extends Transition {
 
           @Override
           public void onAnimationCancel(@NonNull Animator animation) {
-            ValueAnimator animator = ValueAnimator.ofFloat(transitionDrawable.progress, 0f);
-            animator.addUpdateListener(
-            new AnimatorUpdateListener() {
-              @Override
-              public void onAnimationUpdate(ValueAnimator animation) {
-                transitionDrawable.setProgress(animation.getAnimatedFraction());
-              }
-            });
-            /*animator.addListener(
-            new AnimatorListener() {
-                @Override
-                public void onAnimationEnd(Animator mAnimator) {
-                    showTransitionEnd();
-                }
-            });*/
-            
-            animator.start();
+            showTransitionEnd();
           }
 
           @Override
           public void onAnimationRepeat(@NonNull Animator animation) {}
         });
-        
+
     return animator;
   }
 
