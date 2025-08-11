@@ -878,6 +878,13 @@ public final class MaterialContainerTransform extends Transition {
     return transitionShapeAppearanceResId;
   }
 
+  private static View maybeGetViewImageCopy(ViewGroup sceneRoot, View view) {
+    if (view.getParent() instanceof View) {
+      return copyViewImage(sceneRoot, view, (View) view.getParent());
+    }
+    return view;
+  }
+
   @Nullable
   @Override
   public Animator createAnimator(
@@ -936,11 +943,11 @@ public final class MaterialContainerTransform extends Transition {
     final TransitionDrawable transitionDrawable =
         new TransitionDrawable(
             getPathMotion(),
-            copyViewImage(sceneRoot, startView, startView.getParent() != null ? startView.getParent() : startView),
+            maybeGetViewImageCopy(sceneRoot, startView),
             startBounds,
             startShapeAppearanceModel,
             getElevationOrDefault(startElevation, startView),
-            copyViewImage(sceneRoot, endView, endView.getParent() != null ? endView.getParent() : endView),
+            maybeGetViewImageCopy(sceneRoot, endView),
             endBounds,
             endShapeAppearanceModel,
             getElevationOrDefault(endElevation, endView),
@@ -972,16 +979,7 @@ public final class MaterialContainerTransform extends Transition {
         });
 
     animator.addListener(
-        new TransitionListenerAdapter() {
-          @Override
-          public void onTransitionStart(@NonNull Transition transition) {
-            // Add the transition drawable to the root ViewOverlay
-            drawingView.getOverlay().add(transitionDrawable);
-            // Hide the actual views at the beginning of the transition
-            startView.setAlpha(0);
-            endView.setAlpha(0);
-          }
-          
+        new Animator.AnimatorListener() {
           void showTransitionEnd() {
             animator.removeListener(this);
             if (holdAtEndEnabled) {
@@ -999,7 +997,7 @@ public final class MaterialContainerTransform extends Transition {
           @Override
           public void onAnimationStart(@NonNull Animator animation) {
             // Add the transition drawable to the root ViewOverlay
-            ViewUtils.getOverlay(drawingView).add(transitionDrawable);
+            drawingView.getOverlay().add(transitionDrawable);
 
             // Hide the actual views at the beginning of the transition
             startView.setAlpha(0);
@@ -1013,13 +1011,29 @@ public final class MaterialContainerTransform extends Transition {
 
           @Override
           public void onAnimationCancel(@NonNull Animator animation) {
-            showTransitionEnd();
+            ValueAnimator animator = ValueAnimator.ofFloat(transitionDrawable.progress, 0f);
+            animator.addUpdateListener(
+            new AnimatorUpdateListener() {
+              @Override
+              public void onAnimationUpdate(ValueAnimator animation) {
+                transitionDrawable.setProgress(animation.getAnimatedFraction());
+              }
+            });
+            /*animator.addListener(
+            new AnimatorListener() {
+                @Override
+                public void onAnimationEnd(Animator mAnimator) {
+                    showTransitionEnd();
+                }
+            });*/
+            
+            animator.start();
           }
 
           @Override
           public void onAnimationRepeat(@NonNull Animator animation) {}
         });
-
+        
     return animator;
   }
 
