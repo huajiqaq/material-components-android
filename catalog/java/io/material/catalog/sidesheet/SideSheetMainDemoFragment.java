@@ -25,6 +25,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.widget.TooltipCompat;
 import android.util.SparseIntArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -51,6 +52,7 @@ import com.google.android.material.sidesheet.SideSheetBehavior;
 import com.google.android.material.sidesheet.SideSheetCallback;
 import com.google.android.material.sidesheet.SideSheetDialog;
 import io.material.catalog.feature.DemoFragment;
+import io.material.catalog.feature.DemoUtils;
 import io.material.catalog.preferences.CatalogPreferencesHelper;
 import io.material.catalog.windowpreferences.WindowPreferencesManager;
 import java.util.ArrayList;
@@ -238,8 +240,12 @@ public class SideSheetMainDemoFragment extends DemoFragment {
 
     View standardSideSheetCloseIconButton = sideSheet.findViewById(closeIconButtonId);
     standardSideSheetCloseIconButton.setOnClickListener(v -> hideSideSheet(sideSheetBehavior));
+    TooltipCompat.setTooltipText(
+        standardSideSheetCloseIconButton, standardSideSheetCloseIconButton.getContentDescription());
 
     setupBackHandling(sideSheet, sideSheetBehavior);
+
+    DemoUtils.setupClickableContentText(sideSheet);
 
     sideSheetViews.add(sideSheet);
 
@@ -341,6 +347,9 @@ public class SideSheetMainDemoFragment extends DemoFragment {
           View modalSideSheetCloseIconButton = sheetDialog.findViewById(closeIconButtonIdRes);
           if (modalSideSheetCloseIconButton != null) {
             modalSideSheetCloseIconButton.setOnClickListener(v2 -> sheetDialog.hide());
+            TooltipCompat.setTooltipText(
+                modalSideSheetCloseIconButton,
+                modalSideSheetCloseIconButton.getContentDescription());
           }
 
           sheetDialog.show();
