@@ -33,6 +33,7 @@ import static com.google.android.material.transition.TransitionUtils.lerp;
 import static com.google.android.material.transition.TransitionUtils.transform;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -979,22 +980,7 @@ public final class MaterialContainerTransform extends Transition {
         });
 
     animator.addListener(
-        new Animator.AnimatorListener() {
-
-          void showTransitionEnd() {
-            animator.removeListener(this);
-            if (holdAtEndEnabled) {
-              // Keep drawable showing and views hidden (useful for Activity return transitions)
-              return;
-            }
-            // Show the actual views at the end of the transition
-            startView.setAlpha(1);
-            endView.setAlpha(1);
-
-            // Remove the transition drawable from the root ViewOverlay
-            drawingView.getOverlay().remove(transitionDrawable);
-          }
-
+        new AnimatorListenerAdapter() {
           @Override
           public void onAnimationStart(@NonNull Animator animation) {
             // Add the transition drawable to the root ViewOverlay
@@ -1007,16 +993,18 @@ public final class MaterialContainerTransform extends Transition {
 
           @Override
           public void onAnimationEnd(@NonNull Animator animation) {
-            showTransitionEnd();
-          }
+            animator.removeListener(this);
+            if (holdAtEndEnabled) {
+              // Keep drawable showing and views hidden (useful for Activity return transitions)
+              return;
+            }
+            // Show the actual views at the end of the transition
+            startView.setAlpha(1);
+            endView.setAlpha(1);
 
-          @Override
-          public void onAnimationCancel(@NonNull Animator animation) {
-            showTransitionEnd();
+            // Remove the transition drawable from the root ViewOverlay
+            drawingView.getOverlay().remove(transitionDrawable);
           }
-
-          @Override
-          public void onAnimationRepeat(@NonNull Animator animation) {}
         });
 
     return animator;
